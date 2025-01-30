@@ -1,7 +1,12 @@
 // Constants
-const trialCount = 1;  // For single trial test, change back to 10000 for full testing
 const range = 37.5;
 const deviation = 4;
+
+// Other variables
+let trialCount = 10000;  // For single trial test, change back to 10000 for full testing
+let fullResetCount = 0;
+let noSkipCount = 0;
+let noRepeatCount = 0;
 
 // B: 1-15, I: 16-30, N: 31-45, G: 46-60, O: 61-75
 const BINGO = ['B', 'I', 'N', 'G', 'O'];
@@ -87,21 +92,35 @@ function printCalledNumbers(callTracking) {
 // Function to run a single automated test for 1 trial
 function automatedTest() {
     console.log("Running automated test...");
-
+    
     // Run a single trial
     let callTracking = runSingleGame();
-
+    
     // Print the called numbers in the required format
     console.log("Called: ");
     printCalledNumbers(callTracking);
-
+    for(let i = 0; i < trialCount; i++){
+        callTracking = runSingleGame();
+        if(validateFullReset(callTracking)) {
+            fullResetCount++;
+        }
+        if (validateNoRepeats(callTracking)) {
+            noRepeatCount++;
+        } 
+        if (validateNoSkips(callTracking)) {
+            noSkipCount++;
+        }
+    }
+    
     // Validate results
     let isFullReset = validateFullReset(callTracking);
     let isNoRepeats = validateNoRepeats(callTracking);
     let isNoSkips = validateNoSkips(callTracking);
-
+    
     // Print validity results
-    console.log("\nfull reset: " + isFullReset + "\nno repeats: " + isNoRepeats + "\nno skips: " + isNoSkips);
+    console.log("\ntotal runs: " + trialCount + "\ntotal proper resets: " + fullResetCount + "\ntotal runs without repeats: " + noRepeatCount + "\ntotal runs without skips: " + noSkipCount);
+    console.log("\ntotal improper resets: " + (trialCount-fullResetCount) + "\ntotal runs with repeats: " + (trialCount - noRepeatCount) + "\ntotal runs with skips: " + (trialCount - noSkipCount));
+
 }
 
 // Run the automated test for 1 trial
