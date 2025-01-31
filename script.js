@@ -1,6 +1,6 @@
 // Constants
-const range = 37.5;
-const deviation = 4;
+const expectedAverage = 37.5;
+const maxDeviation = 4;
 
 // Other variables
 let trialCount = 10000;  // For single trial test, change back to 10000 for full testing
@@ -11,7 +11,7 @@ let noRepeatCount = 0;
 // B: 1-15, I: 16-30, N: 31-45, G: 46-60, O: 61-75
 const BINGO = ['B', 'I', 'N', 'G', 'O'];
 
-// Function to generate a shuffled list of numbers for B-I-N-G-O
+// Function to generate a shuffled list of all numbers [1-75] (incl)
 function newPopulatedArray() {
     let ret = [];
     for (let i = 1; i <= 75; i++) {
