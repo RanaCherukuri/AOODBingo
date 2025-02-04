@@ -1,12 +1,22 @@
 // Constants
 const expectedAverage = 37.5;
 const maxDeviation = 4;
+const CArray = [[1, 1, 1, 1, 1], [1, 0, 0, 0, 0], [1, 0, 0, 0, 0], [1, 0, 0, 0, 0], [1, 1, 1, 1, 1]];
+const HArray = [[1, 0, 0, 0, 1], [1, 0, 0, 0, 1], [1, 1, 1, 1, 1], [1, 0, 0, 0, 1], [1, 0, 0, 0, 1]];
+const SArray = [[1, 1, 1, 1, 1], [1, 0, 0, 0, 0], [1, 1, 1, 1, 1], [0, 0, 0, 0, 1], [1, 1, 1, 1, 1]];
+const BlackoutArray = [[1, 1, 1, 1, 1], [1, 1, 1, 1, 1], [1, 1, 1, 1, 1], [1, 1, 1, 1, 1], [1, 1, 1, 1, 1]];
+const OutlineArray = [[1, 1, 1, 1, 1], [1, 0, 0, 0, 1], [1, 0, 0, 0, 1], [1, 0, 0, 0, 1], [1, 1, 1, 1, 1]];
+const FourCornersArray = [[1, 0, 0, 0, 1], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [1, 0, 0, 0, 1]];
+const CrossArray = [[0, 0, 1, 0, 0], [0, 0, 1, 0, 0], [1, 1, 1, 1, 1], [0, 0, 1, 0, 0], [0, 0, 1, 0, 0]];
+const XArray = [[1, 0, 0, 0, 1], [0, 1, 0, 1, 0], [0, 0, 1, 0, 0], [0, 1, 0, 1, 0], [1, 0, 0, 0, 1]];
 
 // Other variables
 let trialCount = 10000;  // For single trial test, change back to 10000 for full testing
 let fullResetCount = 0;
 let noSkipCount = 0;
 let noRepeatCount = 0;
+
+
 
 // B: 1-15, I: 16-30, N: 31-45, G: 46-60, O: 61-75
 const BINGO = ['B', 'I', 'N', 'G', 'O'];
@@ -125,3 +135,60 @@ function automatedTest() {
 
 // Run the automated test for 1 trial
 automatedTest();
+
+//HTML Elements
+const intervalSlider = document.getElementById("intervalSlider");
+const playButton = document.getElementById("playButton");
+const pauseButton = document.getElementById("pauseButton");
+//Variables
+let time = 10000
+let divList = [];
+//Runs bingo
+function runBingo(){ //Runs the graphics and bingo
+    let callTracking = runSingleGame();
+    let index = 1;
+    let interval = setInterval(function f(){createNewDiv(callTracking,index++)},time);
+    intervalSlider.addEventListener("change",function f(){
+        clearInterval(interval);
+        time = intervalSlider.value;
+        console.log(time);
+        interval = setInterval(function f(){createNewDiv(callTracking,index++)},time);
+    });
+    pauseButton.addEventListener("click",function f(){
+       clearInterval(interval); 
+    });
+    playButton.addEventListener("click",function f(){
+        clearInterval(interval);
+        interval = setInterval(function f(){createNewDiv(callTracking,index++)},time);
+    })
+}
+
+function createNewDiv(callTracking,index){
+    let newDiv = document.createElement("div");
+    let newElement = document.createElement("span");
+    let newLabel = document.createElement("h1");
+    newLabel.innerHTML = callTracking[index];
+    newDiv.className = "divider";
+    newElement.className = "numberCircle";
+    newLabel.className = "label";
+    newElement.appendChild(newLabel);
+    newDiv.appendChild(newElement);
+    document.body.appendChild(newDiv);
+    //animate();
+    divList.push(newDiv);
+    
+
+}
+// function animate(){
+//     for(let i = 0; i < divList.length; i++){
+//         left = divList[i].offsetLeft;
+//         opacity = divList[i].style.opacity;
+//         let interval = setInterval(function f(){
+//             left += 1;
+//             opacity -= 0.0005 + "";
+//             divList[i].style.left = left + "px";
+//             divList[i].style.opacity = opacity+"";
+//         },100);
+//     }
+// }
+runBingo();

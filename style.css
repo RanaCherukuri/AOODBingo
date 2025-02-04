@@ -1,8 +1,49 @@
-#numberCircle {
-    height: 100px;
-
-}
-
-@keyframes moveRight {
+.numberCircle {
+    position: absolute;
+    height: 75px;
+    width: 75px;
+    /*left: 175px;*/
+    /*top: 20px;*/
+    border-radius: 50%;
+    background-color: #00f0ff;
+    z-index: -1;
     
+    /*animation-name: moveRight;*/
+    /*animation-duration: 0.8s;*/
+    /*animation-delay: 0s;*/
+    /*animation-iteration-count: infinite;*/
+    /*animation-direction: normal;*/
+    /*animation-timing-function: linear;*/
 }
+
+.slider {
+    position: absolute;
+    width: 100px;
+    height:10px;
+    left: 50px;
+    top: 100px;
+}
+.label {
+    position: absolute;
+    width:50px;
+    height:20px;
+}
+.divider {
+    position: absolute;
+    text-align: center;
+    opacity: 1;
+}
+.button {
+    position: absolute;
+    left: 50px;
+    top: 200px;
+}
+#pauseButton {
+    left: 350px;
+}
+
+
+/*@keyframes moveRight {*/
+/*    0% {transform: translateX(0px);}*/
+/*    100%{transform: translateX(50px);}*/
+/*}*/
