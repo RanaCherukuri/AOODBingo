@@ -136,49 +136,130 @@ function automatedTest() {
 // Run the automated test for 1 trial
 automatedTest();
 
-//HTML Elements
-const intervalSlider = document.getElementById("intervalSlider");
-const playButton = document.getElementById("playButton");
-const pauseButton = document.getElementById("pauseButton");
-//Variables
-let time = 10000
-let divList = [];
-//Runs bingo
-function runBingo(){ //Runs the graphics and bingo
-    let callTracking = runSingleGame();
-    let index = 1;
-    let interval = setInterval(function f(){createNewDiv(callTracking,index++)},time);
-    intervalSlider.addEventListener("change",function f(){
-        clearInterval(interval);
-        time = intervalSlider.value;
-        console.log(time);
-        interval = setInterval(function f(){createNewDiv(callTracking,index++)},time);
-    });
-    pauseButton.addEventListener("click",function f(){
-       clearInterval(interval); 
-    });
-    playButton.addEventListener("click",function f(){
-        clearInterval(interval);
-        interval = setInterval(function f(){createNewDiv(callTracking,index++)},time);
-    })
-}
+class BingoCaller {
+            constructor() {
+                this.callOrder = this.generateBingoNumbers();
+                this.calledNumbers = [];
+                this.interval = null;
+                this.delay = 1000; // Default 1 second
+                this.createBingoGrid();
+            }
 
-function createNewDiv(callTracking,index){
-    let newDiv = document.createElement("div");
-    let newElement = document.createElement("span");
-    let newLabel = document.createElement("h1");
-    newLabel.innerHTML = callTracking[index];
-    newDiv.className = "divider";
-    newElement.className = "numberCircle";
-    newLabel.className = "label";
-    newElement.appendChild(newLabel);
-    newDiv.appendChild(newElement);
-    document.body.appendChild(newDiv);
-    //animate();
-    divList.push(newDiv);
+            generateBingoNumbers() {
+                let numbers = Array.from({ length: 75 }, (_, i) => i + 1);
+                for (let i = numbers.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [numbers[i], numbers[j]] = [numbers[j], numbers[i]];
+                }
+                return numbers;
+            }
+
+            createBingoGrid() {
+                const grid = document.getElementById("bingoGrid");
+                for (let i = 1; i <= 75; i++) {
+                    let circle = document.createElement("div");
+                    circle.classList.add("bingo-circle");
+                    circle.innerText = i;
+                    circle.id = `circle-${i}`;
+                    grid.appendChild(circle);
+                }
+            }
+            startCalling() {
+                if (this.interval || this.callOrder.length === 0) return;
+                this.interval = setInterval(() => this.callNumber(), this.delay);
+            }
+
+            pauseCalling() {
+                clearInterval(this.interval);
+                this.interval = null;
+            }
+            callNumber() {
+                if (this.callOrder.length > 0) {
+                    let num = this.callOrder.shift();
+                    this.calledNumbers.push(num);
+
+                    // Create a new circle for the called number
+                    const calledNumberElement = document.createElement("span");
+                    calledNumberElement.innerText = num;
+                    document.getElementById("calledNumbers").appendChild(calledNumberElement);
+
+                    // If more than 4 numbers have been called, remove the oldest
+                    if (this.calledNumbers.length > 4) {
+                        const oldest = document.getElementById("calledNumbers").firstChild;
+                        document.getElementById("calledNumbers").removeChild(oldest);
+                    }
+
+                    // If the number is one of the 4 most recent, make it large
+                    if (this.calledNumbers.length <= 4) {
+                        calledNumberElement.classList.add('recent');
+                    }
+
+                    // Update the grid with the called number
+                    document.getElementById(`circle-${num}`).classList.add("called");
+                    console.log(`Called Number: ${num}`);
+                    document.getElementById("testOutput").innerText = `\nLast Called: ${num}`;
+                } else {
+                    this.pauseCalling();
+                }
+            }
+            updateSpeed(value) {
+                this.delay = value;
+                document.getElementById("speedLabel").innerText = (value / 1000).toFixed(1) + "s";
+                if (this.interval) {
+                    this.pauseCalling();
+                    this.startCalling();
+                }
+            }
+        }
+        const bingoCaller = new BingoCaller();
+        document.getElementById("playButton").addEventListener("click", () => bingoCaller.startCalling());
+        document.getElementById("pauseButton").addEventListener("click", () => bingoCaller.pauseCalling());
+        document.getElementById("speedSlider").addEventListener("input", (e) => bingoCaller.updateSpeed(e.target.value));
+            
+            
+//HTML Elements
+// const intervalSlider = document.getElementById("intervalSlider");
+// const playButton = document.getElementById("playButton");
+// const pauseButton = document.getElementById("pauseButton");
+// Variables
+// let time = 10000
+// let divList = [];
+//Runs bingo
+// function runBingo(){ //Runs the graphics and bingo
+//     let callTracking = runSingleGame();
+//     let index = 1;
+//     let interval = setInterval(function f(){createNewDiv(callTracking,index++)},time);
+//     intervalSlider.addEventListener("change",function f(){
+//         clearInterval(interval);
+//         time = intervalSlider.value;
+//         console.log(time);
+//         interval = setInterval(function f(){createNewDiv(callTracking,index++)},time);
+//     });
+//     pauseButton.addEventListener("click",function f(){
+//       clearInterval(interval); 
+//     });
+//     playButton.addEventListener("click",function f(){
+//         clearInterval(interval);
+//         interval = setInterval(function f(){createNewDiv(callTracking,index++)},time);
+//     })
+// }
+
+// function createNewDiv(callTracking,index){
+//     let newDiv = document.createElement("div");
+//     let newElement = document.createElement("span");
+//     let newLabel = document.createElement("h1");
+//     newLabel.innerHTML = callTracking[index];
+//     newDiv.className = "divider";
+//     newElement.className = "numberCircle";
+//     newLabel.className = "label";
+//     newElement.appendChild(newLabel);
+//     newDiv.appendChild(newElement);
+//     document.body.appendChild(newDiv);
+//     //animate();
+//     divList.push(newDiv);
     
 
-}
+// }
 // function animate(){
 //     for(let i = 0; i < divList.length; i++){
 //         left = divList[i].offsetLeft;
@@ -191,4 +272,5 @@ function createNewDiv(callTracking,index){
 //         },100);
 //     }
 // }
-runBingo();
+// runBingo();
+
