@@ -1,6 +1,20 @@
 // Constants
 const expectedAverage = 37.5;
 const maxDeviation = 4;
+// Bingo frames
+const HLineOneArray = [[1, 1, 1, 1, 1], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0]];
+const HLineTwoArray = [[0, 0, 0, 0, 0], [1, 1, 1, 1, 1], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0]];
+const HLineThreeArray = [[0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [1, 1, 1, 1, 1], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0]];
+const HLineFourArray = [[0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [1, 1, 1, 1, 1], [0, 0, 0, 0, 0]];
+const HLineFiveArray = [[0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [1, 1, 1, 1, 1]];
+const VLineOneArray = [[1, 0, 0, 0, 0], [1, 0, 0, 0, 0], [1, 0, 0, 0, 0], [1, 0, 0, 0, 0], [1, 0, 0, 0, 0]];
+const VLineTwoArray = [[0, 1, 0, 0, 0], [0, 1, 0, 0, 0], [0, 1, 0, 0, 0], [0, 1, 0, 0, 0], [0, 1, 0, 0, 0]];
+const VLineThreeArray = [[0, 0, 1, 0, 0], [0, 0, 1, 0, 0], [0, 0, 1, 0, 0], [0, 0, 1, 0, 0], [0, 0, 1, 0, 0]];
+const VLineFourArray = [[0, 0, 0, 1, 0], [0, 0, 0, 1, 0], [0, 0, 0, 1, 0], [0, 0, 0, 1, 0], [0, 0, 0, 1, 0]];
+const VLineFiveArray = [[0, 0, 0, 0, 1], [0, 0, 0, 0, 1], [0, 0, 0, 0, 1], [0, 0, 0, 0, 1], [0, 0, 0, 0, 1]];
+const DLineOneArray = [[1, 0, 0, 0, 0], [0, 1, 0, 0, 0], [0, 0, 1, 0, 0], [0, 0, 0, 1, 0], [0, 0, 0, 0, 1]];
+const DLineTwoArray = [[0, 0, 0, 0, 1], [0, 0, 0, 1, 0], [0, 0, 1, 0, 0], [0, 1, 0, 0, 0], [1, 0, 0, 0, 0]];
+
 const CArray = [[1, 1, 1, 1, 1], [1, 0, 0, 0, 0], [1, 0, 0, 0, 0], [1, 0, 0, 0, 0], [1, 1, 1, 1, 1]];
 const HArray = [[1, 0, 0, 0, 1], [1, 0, 0, 0, 1], [1, 1, 1, 1, 1], [1, 0, 0, 0, 1], [1, 0, 0, 0, 1]];
 const SArray = [[1, 1, 1, 1, 1], [1, 0, 0, 0, 0], [1, 1, 1, 1, 1], [0, 0, 0, 0, 1], [1, 1, 1, 1, 1]];
@@ -143,6 +157,7 @@ class BingoCaller {
                 this.interval = null;
                 this.delay = 1000; // Default 1 second
                 this.createBingoGrid();
+                this.isPaused = true;
             }
 
             generateBingoNumbers() {
@@ -165,12 +180,24 @@ class BingoCaller {
                 }
             }
             startCalling() {
-                if (this.interval || this.callOrder.length === 0) return;
-                this.interval = setInterval(() => this.callNumber(), this.delay);
+                if(this.isPaused){
+                    if (this.interval || this.callOrder.length === 0) return;
+                    this.interval = setInterval(() => this.callNumber(), this.delay);
+                    this.isPaused = false;
+                    document.getElementById("playButton").innerHTML = "Stop";
+                } else {
+                    clearInterval(this.interval);
+                    this.interval = null;
+                    this.isPaused = true;
+                    document.getElementById("playButton").innerHTML = "Play";
+                }
+                
             }
 
             pauseCalling() {
                 clearInterval(this.interval);
+                this.isPaused = false;
+                this.startCalling();
                 this.interval = null;
             }
             callNumber() {
@@ -198,9 +225,7 @@ class BingoCaller {
                     document.getElementById(`circle-${num}`).classList.add("called");
                     console.log(`Called Number: ${num}`);
                     document.getElementById("testOutput").innerText = `\nLast Called: ${num}`;
-                } else {
-                    this.pauseCalling();
-                }
+                } 
             }
             updateSpeed(value) {
                 this.delay = value;
@@ -210,67 +235,31 @@ class BingoCaller {
                     this.startCalling();
                 }
             }
+            reset() {
+                this.pauseCalling();
+                console.log("reset!");
+                for (let i = 1; i <= 75; i++) {
+                    document.getElementById(`circle-${i}`).classList.remove("called");
+                }
+                
+                for(let i = 0; i < this.calledNumbers.length; i++){
+                    calledNumbers.shift();
+                }
+                
+    
+                this.callOrder = this.generateBingoNumbers();
+                console.log("reset!");
+            }
+        }
+        function showOptionMenu(){
+            document.getElementById("optionMenu").style.visibility = "visible";
+        }
+        function hideOptionMenu(){
+            document.getElementById("optionMenu").style.visibility = "hidden";
         }
         const bingoCaller = new BingoCaller();
         document.getElementById("playButton").addEventListener("click", () => bingoCaller.startCalling());
-        document.getElementById("pauseButton").addEventListener("click", () => bingoCaller.pauseCalling());
         document.getElementById("speedSlider").addEventListener("input", (e) => bingoCaller.updateSpeed(e.target.value));
-            
-            
-//HTML Elements
-// const intervalSlider = document.getElementById("intervalSlider");
-// const playButton = document.getElementById("playButton");
-// const pauseButton = document.getElementById("pauseButton");
-// Variables
-// let time = 10000
-// let divList = [];
-//Runs bingo
-// function runBingo(){ //Runs the graphics and bingo
-//     let callTracking = runSingleGame();
-//     let index = 1;
-//     let interval = setInterval(function f(){createNewDiv(callTracking,index++)},time);
-//     intervalSlider.addEventListener("change",function f(){
-//         clearInterval(interval);
-//         time = intervalSlider.value;
-//         console.log(time);
-//         interval = setInterval(function f(){createNewDiv(callTracking,index++)},time);
-//     });
-//     pauseButton.addEventListener("click",function f(){
-//       clearInterval(interval); 
-//     });
-//     playButton.addEventListener("click",function f(){
-//         clearInterval(interval);
-//         interval = setInterval(function f(){createNewDiv(callTracking,index++)},time);
-//     })
-// }
-
-// function createNewDiv(callTracking,index){
-//     let newDiv = document.createElement("div");
-//     let newElement = document.createElement("span");
-//     let newLabel = document.createElement("h1");
-//     newLabel.innerHTML = callTracking[index];
-//     newDiv.className = "divider";
-//     newElement.className = "numberCircle";
-//     newLabel.className = "label";
-//     newElement.appendChild(newLabel);
-//     newDiv.appendChild(newElement);
-//     document.body.appendChild(newDiv);
-//     //animate();
-//     divList.push(newDiv);
-    
-
-// }
-// function animate(){
-//     for(let i = 0; i < divList.length; i++){
-//         left = divList[i].offsetLeft;
-//         opacity = divList[i].style.opacity;
-//         let interval = setInterval(function f(){
-//             left += 1;
-//             opacity -= 0.0005 + "";
-//             divList[i].style.left = left + "px";
-//             divList[i].style.opacity = opacity+"";
-//         },100);
-//     }
-// }
-// runBingo();
-
+        document.getElementById("optionButton").addEventListener("click",() => showOptionMenu());
+        document.getElementById("hideOptionButton").addEventListener("click",() => hideOptionMenu());
+        document.getElementById("resetButton").addEventListener("click",() => bingoCaller.reset());
