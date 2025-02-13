@@ -1,12 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Averia+Sans+Libre">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bingo Caller</title>
     <style>
-        body { font-family: Averia Sans Libre, sans-serif; text-align: center; }
+        body { font-family: Averia Sans Libre, sans-serif; text-align: center; background-color: #DDFFFF}
         #calledNumbers {
             left: 40%;
             width: 1000px;
@@ -139,23 +138,32 @@
             position: absolute;
             left: 95%;
         }
+        .button {
+            background-color: orange !important;
+            color: white;
+            border-width: 0px;
+            border-radius: 15%;
+        }
+        
         
         
     </style>
 </head>
 <body>
     <h1>Bingo Caller</h1>
-    <button id="playButton">Play</button>
-    <button id = "resetButton">Reset</button>
+    <button id = "playButton" class = "button">Play</button>
+    <button id = "resetButton" class = "button">Reset</button>
     <div id="calledNumbers" class = "calledNumberDiv"></div>
-    <button id="optionButton">Options</button>
+    <button id="optionButton" class = " button">Options</button>
     <div id = "optionMenu">
         <div id = "Menu" class = "rectangle">
-            <button id = "hideOptionButton">Close</button>
+            <button id = "hideOptionButton">back</button>
             <h1 id = "optionLabel">Options</h1>
             <h3 id = "speedTitle">Speed<h3>
             <input type="range" id="speedSlider" min="100" max="30000" step="100" value="1000">
             <span id="speedLabel">1.0s</span>
+            
+            
         </div>
     </div>
     <div class="bingo-container">
@@ -171,6 +179,9 @@
     <div id="testOutput"></div>
 
     <script src = "script.js">
+        
+
+        
     </script>
 </body>
 </html>

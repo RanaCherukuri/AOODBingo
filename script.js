@@ -1,20 +1,6 @@
 // Constants
 const expectedAverage = 37.5;
 const maxDeviation = 4;
-// Bingo frames
-const HLineOneArray = [[1, 1, 1, 1, 1], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0]];
-const HLineTwoArray = [[0, 0, 0, 0, 0], [1, 1, 1, 1, 1], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0]];
-const HLineThreeArray = [[0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [1, 1, 1, 1, 1], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0]];
-const HLineFourArray = [[0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [1, 1, 1, 1, 1], [0, 0, 0, 0, 0]];
-const HLineFiveArray = [[0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [1, 1, 1, 1, 1]];
-const VLineOneArray = [[1, 0, 0, 0, 0], [1, 0, 0, 0, 0], [1, 0, 0, 0, 0], [1, 0, 0, 0, 0], [1, 0, 0, 0, 0]];
-const VLineTwoArray = [[0, 1, 0, 0, 0], [0, 1, 0, 0, 0], [0, 1, 0, 0, 0], [0, 1, 0, 0, 0], [0, 1, 0, 0, 0]];
-const VLineThreeArray = [[0, 0, 1, 0, 0], [0, 0, 1, 0, 0], [0, 0, 1, 0, 0], [0, 0, 1, 0, 0], [0, 0, 1, 0, 0]];
-const VLineFourArray = [[0, 0, 0, 1, 0], [0, 0, 0, 1, 0], [0, 0, 0, 1, 0], [0, 0, 0, 1, 0], [0, 0, 0, 1, 0]];
-const VLineFiveArray = [[0, 0, 0, 0, 1], [0, 0, 0, 0, 1], [0, 0, 0, 0, 1], [0, 0, 0, 0, 1], [0, 0, 0, 0, 1]];
-const DLineOneArray = [[1, 0, 0, 0, 0], [0, 1, 0, 0, 0], [0, 0, 1, 0, 0], [0, 0, 0, 1, 0], [0, 0, 0, 0, 1]];
-const DLineTwoArray = [[0, 0, 0, 0, 1], [0, 0, 0, 1, 0], [0, 0, 1, 0, 0], [0, 1, 0, 0, 0], [1, 0, 0, 0, 0]];
-
 const CArray = [[1, 1, 1, 1, 1], [1, 0, 0, 0, 0], [1, 0, 0, 0, 0], [1, 0, 0, 0, 0], [1, 1, 1, 1, 1]];
 const HArray = [[1, 0, 0, 0, 1], [1, 0, 0, 0, 1], [1, 1, 1, 1, 1], [1, 0, 0, 0, 1], [1, 0, 0, 0, 1]];
 const SArray = [[1, 1, 1, 1, 1], [1, 0, 0, 0, 0], [1, 1, 1, 1, 1], [0, 0, 0, 0, 1], [1, 1, 1, 1, 1]];
@@ -151,115 +137,121 @@ function automatedTest() {
 automatedTest();
 
 class BingoCaller {
-            constructor() {
-                this.callOrder = this.generateBingoNumbers();
-                this.calledNumbers = [];
-                this.interval = null;
-                this.delay = 1000; // Default 1 second
-                this.createBingoGrid();
-                this.isPaused = true;
-            }
+    constructor() {
+        this.callOrder = this.generateBingoNumbers();
+        this.calledNumbers = [];
+        this.interval = null;
+        this.delay = 1000; // Default 1 second
+        this.createBingoGrid();
+        this.isPaused = true;
+    }
 
-            generateBingoNumbers() {
-                let numbers = Array.from({ length: 75 }, (_, i) => i + 1);
-                for (let i = numbers.length - 1; i > 0; i--) {
-                    const j = Math.floor(Math.random() * (i + 1));
-                    [numbers[i], numbers[j]] = [numbers[j], numbers[i]];
-                }
-                return numbers;
-            }
-
-            createBingoGrid() {
-                const grid = document.getElementById("bingoGrid");
-                for (let i = 1; i <= 75; i++) {
-                    let circle = document.createElement("div");
-                    circle.classList.add("bingo-circle");
-                    circle.innerText = i;
-                    circle.id = `circle-${i}`;
-                    grid.appendChild(circle);
-                }
-            }
-            startCalling() {
-                if(this.isPaused){
-                    if (this.interval || this.callOrder.length === 0) return;
-                    this.interval = setInterval(() => this.callNumber(), this.delay);
-                    this.isPaused = false;
-                    document.getElementById("playButton").innerHTML = "Stop";
-                } else {
-                    clearInterval(this.interval);
-                    this.interval = null;
-                    this.isPaused = true;
-                    document.getElementById("playButton").innerHTML = "Play";
-                }
-                
-            }
-
-            pauseCalling() {
-                clearInterval(this.interval);
-                this.isPaused = false;
-                this.startCalling();
-                this.interval = null;
-            }
-            callNumber() {
-                if (this.callOrder.length > 0) {
-                    let num = this.callOrder.shift();
-                    this.calledNumbers.push(num);
-
-                    // Create a new circle for the called number
-                    const calledNumberElement = document.createElement("span");
-                    calledNumberElement.innerText = num;
-                    document.getElementById("calledNumbers").appendChild(calledNumberElement);
-
-                    // If more than 4 numbers have been called, remove the oldest
-                    if (this.calledNumbers.length > 4) {
-                        const oldest = document.getElementById("calledNumbers").firstChild;
-                        document.getElementById("calledNumbers").removeChild(oldest);
-                    }
-
-                    // If the number is one of the 4 most recent, make it large
-                    if (this.calledNumbers.length <= 4) {
-                        calledNumberElement.classList.add('recent');
-                    }
-
-                    // Update the grid with the called number
-                    document.getElementById(`circle-${num}`).classList.add("called");
-                    console.log(`Called Number: ${num}`);
-                    document.getElementById("testOutput").innerText = `\nLast Called: ${num}`;
-                } 
-            }
-            updateSpeed(value) {
-                this.delay = value;
-                document.getElementById("speedLabel").innerText = (value / 1000).toFixed(1) + "s";
-                if (this.interval) {
-                    this.pauseCalling();
-                    this.startCalling();
-                }
-            }
-            reset() {
-                this.pauseCalling();
-                console.log("reset!");
-                for (let i = 1; i <= 75; i++) {
-                    document.getElementById(`circle-${i}`).classList.remove("called");
-                }
-                
-                for(let i = 0; i < this.calledNumbers.length; i++){
-                    calledNumbers.shift();
-                }
-                
-    
-                this.callOrder = this.generateBingoNumbers();
-                console.log("reset!");
-            }
+    generateBingoNumbers() {
+        let numbers = Array.from({ length: 75 }, (_, i) => i + 1);
+        for (let i = numbers.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [numbers[i], numbers[j]] = [numbers[j], numbers[i]];
         }
-        function showOptionMenu(){
-            document.getElementById("optionMenu").style.visibility = "visible";
+        return numbers;
+    }
+
+    createBingoGrid() {
+        const grid = document.getElementById("bingoGrid");
+        for (let i = 1; i <= 75; i++) {
+            let circle = document.createElement("div");
+            circle.classList.add("bingo-circle");
+            circle.innerText = i;
+            circle.id = `circle-${i}`;
+            grid.appendChild(circle);
         }
-        function hideOptionMenu(){
-            document.getElementById("optionMenu").style.visibility = "hidden";
+    }
+    startCalling() {
+        if(this.isPaused){
+            if (this.interval || this.callOrder.length === 0) return;
+            this.interval = setInterval(() => this.callNumber(), this.delay);
+            this.isPaused = false;
+            document.getElementById("playButton").innerHTML = "Stop";
+        } else {
+            clearInterval(this.interval);
+            this.interval = null;
+            this.isPaused = true;
+            document.getElementById("playButton").innerHTML = "Play";
         }
-        const bingoCaller = new BingoCaller();
-        document.getElementById("playButton").addEventListener("click", () => bingoCaller.startCalling());
-        document.getElementById("speedSlider").addEventListener("input", (e) => bingoCaller.updateSpeed(e.target.value));
-        document.getElementById("optionButton").addEventListener("click",() => showOptionMenu());
-        document.getElementById("hideOptionButton").addEventListener("click",() => hideOptionMenu());
-        document.getElementById("resetButton").addEventListener("click",() => bingoCaller.reset());
+        
+    }
+
+    pauseCalling() {
+        clearInterval(this.interval);
+        this.isPaused = false;
+        this.startCalling();
+        this.interval = null;
+    }
+    callNumber() {
+        if (this.callOrder.length > 0) {
+            let num = this.callOrder.shift();
+            this.calledNumbers.push(num);
+
+            // Create a new circle for the called number
+            const calledNumberElement = document.createElement("span");
+            calledNumberElement.innerText = num;
+            document.getElementById("calledNumbers").appendChild(calledNumberElement);
+            console.log(document.getElementById("calledNumbers").innerHTML);
+
+            // If more than 4 numbers have been called, remove the oldest
+            if (this.calledNumbers.length > 4) {
+                console.log("remove");
+                const oldest = document.getElementById("calledNumbers").firstChild;
+                document.getElementById("calledNumbers").removeChild(oldest);
+            }
+
+            // If the number is one of the 4 most recent, make it large
+            if (this.calledNumbers.length <= 4) {
+                calledNumberElement.classList.add('recent');
+            }
+
+            // Update the grid with the called number
+            document.getElementById(`circle-${num}`).classList.add("called");
+            console.log(`Called Number: ${num}`);
+            document.getElementById("testOutput").innerText = `\nLast Called: ${num}`;
+        } 
+    }
+    updateSpeed(value) {
+        this.delay = value;
+        document.getElementById("speedLabel").innerText = (value / 1000).toFixed(1) + "s";
+        if (this.interval) {
+            this.pauseCalling();
+            this.startCalling();
+        }
+    }
+    reset() {
+        this.pauseCalling();
+        console.log("reset!");
+        for (let i = 1; i <= 75; i++) {
+            document.getElementById(`circle-${i}`).classList.remove("called");
+        }
+        const parent = document.getElementById("calledNumbers");
+        console.log(parent.innerHTML);
+        while(parent.firstChild){
+            parent.removeChild(parent.firstChild);
+        }
+        console.log(parent.innerHTML);
+        
+        this.calledNumbers = [];
+
+        
+
+        this.callOrder = this.generateBingoNumbers();
+    }
+}
+function showOptionMenu(){
+    document.getElementById("optionMenu").style.visibility = "visible";
+}
+function hideOptionMenu(){
+    document.getElementById("optionMenu").style.visibility = "hidden";
+}
+const bingoCaller = new BingoCaller();
+document.getElementById("playButton").addEventListener("click", () => bingoCaller.startCalling());
+document.getElementById("speedSlider").addEventListener("input", (e) => bingoCaller.updateSpeed(e.target.value));
+document.getElementById("optionButton").addEventListener("click",() => showOptionMenu());
+document.getElementById("hideOptionButton").addEventListener("click",() => hideOptionMenu());
+document.getElementById("resetButton").addEventListener("click",() => bingoCaller.reset());
