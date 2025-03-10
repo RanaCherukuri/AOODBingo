@@ -16,8 +16,6 @@ let fullResetCount = 0;
 let noSkipCount = 0;
 let noRepeatCount = 0;
 
-
-
 // B: 1-15, I: 16-30, N: 31-45, G: 46-60, O: 61-75
 const BINGO = ['B', 'I', 'N', 'G', 'O'];
 
@@ -193,7 +191,11 @@ class BingoCaller {
 
             // Create a new circle for the called number
             const calledNumberElement = document.createElement("span");
-            calledNumberElement.innerText = num;
+            if (num <= 15) calledNumberElement.innerText = "B\n" + num;
+            else if (num <= 30) calledNumberElement.innerText = "I\n" + num;
+            else if (num <= 45) calledNumberElement.innerText = "N\n" + num;
+            else if (num <= 60) calledNumberElement.innerText = "G\n" + num;
+            else if (num <= 75) calledNumberElement.innerText = "O\n" + num;
             document.getElementById("calledNumbers").appendChild(calledNumberElement);
             console.log(document.getElementById("calledNumbers").innerHTML);
 
@@ -213,6 +215,7 @@ class BingoCaller {
             document.getElementById(`circle-${num}`).classList.add("called");
             console.log(`Called Number: ${num}`);
             document.getElementById("testOutput").innerText = `\nLast Called: ${num}`;
+            document.getElementById("ding").play();
         } 
     }
     updateSpeed(value) {
@@ -237,9 +240,6 @@ class BingoCaller {
         console.log(parent.innerHTML);
         
         this.calledNumbers = [];
-
-        
-
         this.callOrder = this.generateBingoNumbers();
     }
 }
@@ -249,6 +249,7 @@ function showOptionMenu(){
 function hideOptionMenu(){
     document.getElementById("optionMenu").style.visibility = "hidden";
 }
+
 const bingoCaller = new BingoCaller();
 document.getElementById("playButton").addEventListener("click", () => bingoCaller.startCalling());
 document.getElementById("speedSlider").addEventListener("input", (e) => bingoCaller.updateSpeed(e.target.value));
